@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { DEFAULT_GEMINI_MODEL } from "@/lib/gemini-models";
 import { buildRecommendationPrompt, parseRecommendations, type DiningConditions } from "@/lib/recommendations";
+import { retryGeminiRequest } from "@/lib/retry";
 
 const systemInstruction = `당신은 한국의 식사 메뉴 추천 전문가입니다.
 사용자의 모든 조건을 우선순위로 반영해 서로 다른 메뉴 3가지를 추천합니다.
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
     }
 
     const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const response = await client.models.generateContent({
+    const response = await retryGeminiRequest(() => client.models.generateContent({
       model: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
       contents: buildRecommendationPrompt(body),
       config: {
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
         responseMimeType: "application/json",
         responseSchema,
       },
-    });
+    }));
     const result = parseRecommendations(response.text || "");
     return Response.json(result);
   } catch (error) {
