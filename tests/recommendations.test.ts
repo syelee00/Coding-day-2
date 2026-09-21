@@ -3,6 +3,7 @@ import test from "node:test";
 
 import { buildRecommendationPrompt, parseRecommendations } from "../lib/recommendations";
 import { buildIllustrationPrompt } from "../lib/illustrations";
+import { DEFAULT_GEMINI_MODEL } from "../lib/gemini-models";
 
 test("buildRecommendationPrompt includes every submitted dining condition", () => {
   const prompt = buildRecommendationPrompt({
@@ -45,4 +46,8 @@ test("buildIllustrationPrompt names the selected menu and locks the visual style
   assert.match(prompt, /얼큰한 순두부찌개/);
   assert.match(prompt, /food illustration/i);
   assert.match(prompt, /no text/i);
+});
+
+test("uses an available Gemini Flash model by default", () => {
+  assert.equal(DEFAULT_GEMINI_MODEL, "gemini-3.8-flash");
 });

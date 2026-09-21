@@ -1,4 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
+import { DEFAULT_GEMINI_MODEL } from "@/lib/gemini-models";
 import { buildRecommendationPrompt, parseRecommendations, type DiningConditions } from "@/lib/recommendations";
 
 const systemInstruction = `당신은 한국의 식사 메뉴 추천 전문가입니다.
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
 
     const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const response = await client.models.generateContent({
-      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+      model: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
       contents: buildRecommendationPrompt(body),
       config: {
         systemInstruction,

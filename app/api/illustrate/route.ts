@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import { DEFAULT_GEMINI_IMAGE_MODEL } from "@/lib/gemini-models";
 import { buildIllustrationPrompt } from "@/lib/illustrations";
 
 type GeneratedImage = { type: "image"; data?: string };
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     if (typeof name !== "string" || !name.trim()) return Response.json({ error: "메뉴 이름이 필요합니다." }, { status: 400 });
     const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const interaction = await client.interactions.create({
-      model: process.env.GEMINI_IMAGE_MODEL || "gemini-3.1-flash-image",
+      model: process.env.GEMINI_IMAGE_MODEL || DEFAULT_GEMINI_IMAGE_MODEL,
       input: buildIllustrationPrompt(name.trim()),
       response_format: { type: "image", mime_type: "image/png", aspect_ratio: "1:1", image_size: "1K" },
     });
