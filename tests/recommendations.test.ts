@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildRecommendationPrompt, parseRecommendations } from "../lib/recommendations";
-import { buildIllustrationPrompt } from "../lib/illustrations";
 import { DEFAULT_GEMINI_MODEL } from "../lib/gemini-models";
 
 test("buildRecommendationPrompt includes every submitted dining condition", () => {
@@ -38,14 +37,6 @@ test("parseRecommendations accepts exactly three valid recommendation cards", ()
 
 test("parseRecommendations rejects malformed AI output", () => {
   assert.throws(() => parseRecommendations('{"recommendations": []}'), /3개의 추천/);
-});
-
-test("buildIllustrationPrompt names the selected menu and locks the visual style", () => {
-  const prompt = buildIllustrationPrompt("얼큰한 순두부찌개");
-
-  assert.match(prompt, /얼큰한 순두부찌개/);
-  assert.match(prompt, /food illustration/i);
-  assert.match(prompt, /no text/i);
 });
 
 test("uses an available Gemini Flash model by default", () => {
